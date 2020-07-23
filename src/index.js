@@ -14,8 +14,6 @@ window.login = () => {
 }
 
 window.callback = () => {
-  userManager.signinRedirectCallback(user => {
-   	console.log(user);
-   	return user;
-  });
+  // 1. get access token
+  // 2. call profile api
 }
