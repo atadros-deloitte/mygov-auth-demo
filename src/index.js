@@ -5,7 +5,8 @@ const userManager = new UserManager({
 	client_id: 'mygov-citizen-portal',
 	redirect_uri: 'http://localhost:8080/callback.html',
 	response_type: 'code',
-	scope: 'openid%20profile',
+  scope: 'openid%20profile',
+  loadUserInfo: true
 });
 
 window.login = () => {
@@ -33,8 +34,6 @@ window.callback = () => {
 }
 
 const fetchProfile = (user) => {
-
-  console.log(user.profile.sub);
 
   // extract user id from JWT (this is a hack!)
   const unencrypted_jwt = JSON.parse(atob(user.access_token.split('.')[1]));
