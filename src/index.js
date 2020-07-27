@@ -8,42 +8,47 @@ const userManager = new UserManager({
 	scope: 'openid%20profile',
 });
 
-function fetchProfile(user) {
-  console.log(user)
-  // fetch Profile
-  const profile = fetch('https://test3.api.my.gov.au/mygov/ext-tst-3/profile/v1/profiles/PG642732', {
-    method: 'GET',
-    headers: {
-      'Content-type': 'application/json',
-      'Authorization': `Bearer ${user.access_token}`,
-      'Origin': 'http://localhost:8080/callback.html',
-      'X-MGV-Client-Id': 'mygov-citizen-portal'
-    }
-  })
-  .then(val => val.json())
-  .then(prof => console.log('profile', profile));
-}
-
 window.login = () => {
-  console.log('Redirecting to myGov login screen..')
+  // redirect to mygov login screen
   userManager.signinRedirect();
 }
 
 window.callback = () => {
-  // 1. get access token
-  // 2. call profile api
-  const user = userManager.getUser()
-  .then(user => {
+
+  userManager.getUser().then(user => {
+
+    // check if user data is in session storage
     if (user) {
       fetchProfile(user);
-    } else {
-      return userManager.signinRedirectCallback()
-      .then(user => {
+    }
+    else {
+      // otherwise get access token
+      return userManager.signinRedirectCallback().then(user => {
         if (user) {
           fetchProfile(user);
         }
-      })
+      });
     }
   });
-  // call profile api
 }
+
+const fetchProfile = (user) => {
+
+  console.log(user.profile.sub);
+
+  // extract user id from JWT (this is a hack!)
+  const unencrypted_jwt = JSON.parse(atob(user.access_token.split('.')[1]));
+  const user_id = unencrypted_jwt.sub;
+  console.log('User ID: ', user_id);
+
+  const profile = fetch(`https://test3.api.my.gov.au/mygov/ext-tst-3/profile/v1/profiles/${user_id}`, {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': `Bearer ${user.access_token}`,
+      'Origin': 'http://localhost:8080',
+      'X-MGV-Client-Id': 'mygov-citizen-portal'
+    }
+  })
+  .then(response => console.log('User Profile', response.json()));
+};
