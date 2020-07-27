@@ -5,8 +5,14 @@ const userManager = new UserManager({
 	client_id: 'mygov-citizen-portal',
 	redirect_uri: 'http://localhost:8080/callback.html',
 	response_type: 'code',
-  scope: 'openid%20profile',
-  loadUserInfo: true
+  scope: 'openid profile',
+  metadata: {
+    "issuer": "https://test3.my.gov.au",
+    "authorization_endpoint": "https://test3.my.gov.au/mga/sps/oauth/oauth20/authorize",
+    "token_endpoint": "https://test3.my.gov.au/mga/sps/oauth/oauth20/token",
+    "userinfo_endpoint": "https://test3.my.gov.au/mga/sps/oauth/oauth20/userinfo",
+    "jwks_uri": "https://test3.my.gov.au/mga/sps/oauth/oauth20/jwks/MYGOV-OIDC-RS256"
+  }
 });
 
 window.login = () => {
@@ -35,12 +41,12 @@ window.callback = () => {
 
 const fetchProfile = (user) => {
 
-  // extract user id from JWT (this is a hack!)
-  const unencrypted_jwt = JSON.parse(atob(user.access_token.split('.')[1]));
-  const user_id = unencrypted_jwt.sub;
-  console.log('User ID: ', user_id);
+  // convert user id to uppercae (hack!)
+  user.profile.sub = user.profile.sub.toString().toUpperCase();
 
-  const profile = fetch(`https://test3.api.my.gov.au/mygov/ext-tst-3/profile/v1/profiles/${user_id}`, {
+  console.log('User ID: ', user.profile.sub);
+
+  const profile = fetch(`https://test3.api.my.gov.au/mygov/ext-tst-3/profile/v1/profiles/${user.profile.sub}`, {
     method: 'GET',
     headers: {
       'Content-type': 'application/json',
@@ -49,5 +55,6 @@ const fetchProfile = (user) => {
       'X-MGV-Client-Id': 'mygov-citizen-portal'
     }
   })
-  .then(response => console.log('User Profile', response.json()));
+  .then(response => response.json())
+  .then(profile => console.log(profile));
 };
