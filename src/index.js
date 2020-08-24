@@ -1,6 +1,7 @@
 import { UserManager } from 'oidc-client';
 
 const userManager = new UserManager({
+<<<<<<< HEAD
   authority: 'https://test3.my.gov.au',
   client_id: 'mygov-citizen-portal',
   redirect_uri: 'http://localhost:8080/auth-callback.html',
@@ -18,6 +19,19 @@ const userManager = new UserManager({
     userinfo_endpoint: 'https://test3.my.gov.au/mga/sps/oauth/oauth20/userinfo',
     jwks_uri: 'https://test3.my.gov.au/mga/sps/oauth/oauth20/jwks/MYGOV-OIDC-RS256',
     end_session_endpoint: 'https://test3.my.gov.au/mga/sps/authsvc/policy/slo'
+=======
+	authority: 'https://test3.my.gov.au',
+	client_id: 'mygov-citizen-portal',
+	redirect_uri: 'http://localhost:8080/callback.html',
+	response_type: 'code',
+  scope: 'openid profile',
+  metadata: {
+    "issuer": "https://test3.my.gov.au",
+    "authorization_endpoint": "https://test3.my.gov.au/mga/sps/oauth/oauth20/authorize",
+    "token_endpoint": "https://test3.my.gov.au/mga/sps/oauth/oauth20/token",
+    "userinfo_endpoint": "https://test3.my.gov.au/mga/sps/oauth/oauth20/userinfo",
+    "jwks_uri": "https://test3.my.gov.au/mga/sps/oauth/oauth20/jwks/MYGOV-OIDC-RS256"
+>>>>>>> 84099c9facd35b1675c071b01b1208d45ab30bf3
   }
 });
 const test = userManager.signoutRedirectCallback().then(console.log);
