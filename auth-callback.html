@@ -10,9 +10,12 @@
 <body>
   <div id="main"></div>
   <script type="text/javascript" src="dist/bundle.js"></script>
-  <script>callback();</script>
-  <button onclick="renewSession()">Renew session</button>
-  <button onclick="logout()">Logout</button>
+  <script>
+    var serviceConfig = {
+      aemRedirect: 'http://localhost:8080/callback.html'
+    }
+  </script>
+  <script>authCallback();</script>
 </body>
 
 </html>
